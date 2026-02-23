@@ -128,7 +128,9 @@
         outline: none;
         transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
       }
-
+#forgotform input{
+margin-bottom: 1em;
+}
       input[type="password"]::placeholder {
         color: var(--text-muted);
         font-weight: 300;
@@ -141,7 +143,7 @@
       }
 
       /* Submit button */
-      #btn {
+      #btn,#resetbtn {
         width: 100%;
         padding: clamp(13px, 3vw, 16px);
         background: linear-gradient(135deg, var(--raspberry) 0%, var(--grape) 100%);
@@ -154,15 +156,16 @@
         letter-spacing: 0.05em;
         cursor: pointer;
         transition: transform 0.2s, box-shadow 0.3s;
+        margin-top: 1em;
         box-shadow: 0 4px 20px rgba(192,20,108,0.45);
       }
 
-      #btn:hover {
+      #btn,#resetbtn:hover {
         transform: translateY(-2px);
         box-shadow: 0 8px 30px rgba(192,20,108,0.55);
       }
 
-      #btn:active {
+      #btn,#resetbtn:active {
         transform: translateY(0);
       }
 
@@ -187,7 +190,7 @@
       }
 
       /* Result messages */
-      #yourpassword {
+      #yourpassword , #forgotmsg ,#forgot{
         transition: all 1s;
         font-weight: bold;
         font-size: clamp(12px, 4vw, 16px);
@@ -216,7 +219,7 @@
 
   </head>
   <body>
-    <form action="" onsubmit="checkpassword(event)">
+    <form action="" onsubmit="checkpassword(event)" id="mainform">
       <button>Login</button>
       <input
         type="password"
@@ -229,14 +232,41 @@
       />
    <div id="yourpassword"></div>
    <div id="wrongpassword"></div>
-      <input  id="btn" type="submit" value="Submit" />
+   <div id="forgot" onclick="display()">Forgot Password</div>
+      <input  id="resetbtn" type="submit" value="Submit" />
+    </form>
+    
+    <form action="" id="forgotform" onsubmit="forgot(event)">
+      <input
+        type="password"
+        name=""
+        id="newpassword"
+        placeholder="enter password"
+        title="password must be atleast 8 character"
+        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!/@])[A-Za-z\d!/@]{8,50}$"
+  required
+      />
+      <input
+        type="password"
+        name=""
+        id="confirmpassword"
+        placeholder="enter password"
+        title="password must be atleast 8 character"
+        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!/@])[A-Za-z\d!/@]{8,50}$"
+  required
+      />
+   <div id="forgotmsg" style="font-weight: normal;"></div>
+
+      <input onclick="" id="btn" type="submit" value="Submit" />
     </form>
     
     <script>
-let mypassword = "Khadija@";
-      let yourpassword = document.getElementById("yourpassword");
+let mypassword = localStorage.getItem("mypassword") || "Khadija@";   
+    let  forgotmsg = document.getElementById("forgotmsg");
+      let mainform = document.getElementById("mainform");
+      let fgtform = document.getElementById("forgotform");
       mypassword.toLowerCase()
-      
+      fgtform.style.display ="none"
       
       function checkpassword(event) {
         
@@ -251,12 +281,39 @@ let mypassword = "Khadija@";
         
         }
         else{
-          yourpassword.innerHTML = "You enter the Wrong password"
-let wrong = document.getElementById("wrongpassword").innerHTML = "<span class='bold'> You entered: " + passworrd ;
+          yourpassword.innerHTML = "You enter the Wrong password";
+let wrong = document.getElementById("wrongpassword");
+wrong.innerHTML = "<span class='bold'> You entered: " + passworrd ;
  wrong.style.color = "tomato"
         }
       }
+      function display() {
+        mainform.style.display ="none"
+      fgtform.style.display ="block"
 
+      }
+
+
+      function forgot(event) {
+  event.preventDefault();
+
+  let newpass = document.getElementById("newpassword").value;
+  let confirmpassword = document.getElementById("confirmpassword").value;
+  let forgotmessage = document.getElementById("forgotmsg");
+
+  
+
+  if (newpass === confirmpassword) {
+    mypassword = newpass;
+
+    localStorage.setItem("mypassword", newpass);
+
+    console.log("Saved password:", localStorage.getItem("mypassword"));
+
+    forgotmsg.innerHTML = "Password Updated Successfully ✅";
+    forgotmsg.style.color = "lightgreen";
+  }
+}
     </script>
     
   </body>
